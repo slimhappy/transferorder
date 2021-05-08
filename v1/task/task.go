@@ -3,32 +3,69 @@ package task
 import (
 	"github.com/gin-gonic/gin"
 	"net/http"
-	"transferorder/v1/action"
 )
 
-type req struct {
-	Msg string `json:"msg"`
-	Task int `json:"task"`
+// 单个任务结构体
+type Task struct{
+	Action int
 }
 
+// 任务序列
+var TaskQueue []Task
+
+// 错误码类型
+type ErrorCodeType int
+
+// 返回体中的错误码变量
+const (
+	NoError         ErrorCodeType = 0
+	ErrorInvalidReq ErrorCodeType = 1
+)
+
+// 请求体
+type req struct {
+	Msg string `json:"msg"`
+	Action int `json:"action"`
+}
+
+// 返回体
 type resp struct {
 	Msg string `json:"msg"`
 	Action int `json:"action"`
-	ErrorCode action.ErrorCodeType `json:"errorCode"`
+	ErrorCode ErrorCodeType `json:"errorCode"`
 }
 
+// /v1/gettask 获取任务
 func GetTask(c *gin.Context)  {
-	var res resp
-	if len(action.TaskQueue) >0{
-		res.Msg="Task To do"
-		res.ErrorCode = action.NoError
-		res.Action = action.TaskQueue[0].Action
-		action.TaskQueue = action.TaskQueue[1:]
-		c.JSON(http.StatusOK,res)
+	var p resp
+	if len(TaskQueue) >0{
+		p.Msg="Task To do"
+		p.ErrorCode = NoError
+		p.Action = TaskQueue[0].Action
+		TaskQueue = TaskQueue[1:]
+		c.JSON(http.StatusOK,p)
 	}else{
-		res.Msg="No Task To do"
-		res.ErrorCode = action.NoError
-		res.Action = 0
-		c.JSON(http.StatusOK,res)
+		p.Msg="No Task To do"
+		p.ErrorCode = NoError
+		p.Action = 0
+		c.JSON(http.StatusOK,p)
+	}
+}
+
+// /v1/pushtask 推送任务
+func PushTask(c *gin.Context) {
+	var r req
+	var p resp
+	err := c.ShouldBindJSON(&r)
+	if err != nil{
+		p.ErrorCode = ErrorInvalidReq
+		p.Msg = "Invalid Request"
+		c.JSON(http.StatusBadRequest, p)
+	}else {
+		p.ErrorCode = NoError
+		p.Msg = "Request Accept"
+		p.Action = r.Action
+		c.JSON(http.StatusOK, p)
+		TaskQueue = append(TaskQueue, Task{Action: r.Action})
 	}
 }
