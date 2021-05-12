@@ -1,7 +1,6 @@
 package config
 
 import (
-	"fmt"
 	"github.com/spf13/viper"
 )
 
@@ -10,7 +9,8 @@ type ConfYaml struct {
 }
 
 type SectionSvr struct {
-	Port string `yaml:"port"`
+	Port    string `yaml:"port"`
+	FileDir string `yaml:"file_dir"`
 }
 
 var Conf ConfYaml
@@ -22,7 +22,8 @@ func init() {
 	viper.SetConfigType("yaml")
 	err := viper.ReadInConfig() // Find and read the config file
 	if err != nil {             // Handle errors reading the config file
-		panic(fmt.Errorf("Fatal error config file: %s \n", err))
+		panic(err)
 	}
 	Conf.Svr.Port = viper.GetString("svr.port")
+	Conf.Svr.FileDir = viper.GetString("svr.file_dir")
 }

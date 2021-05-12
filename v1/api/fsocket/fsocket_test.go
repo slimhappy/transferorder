@@ -15,6 +15,7 @@ var baseUrl string = "http://127.0.0.1:8000"
 var filePath string = "/Users/yizhang/Downloads/test.png"
 
 func TestUploadFile(t *testing.T) {
+	// 创建请求地址
 	url := baseUrl + "/v1/upload"
 	file, err := os.Open(filePath)
 	if err != nil {
