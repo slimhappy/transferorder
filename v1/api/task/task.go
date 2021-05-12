@@ -6,7 +6,7 @@ import (
 )
 
 // 单个任务结构体
-type Task struct{
+type Task struct {
 	Action int
 }
 
@@ -24,31 +24,31 @@ const (
 
 // 请求体
 type req struct {
-	Msg string `json:"msg"`
-	Action int `json:"action"`
+	Msg    string `json:"msg"`
+	Action int    `json:"action"`
 }
 
 // 返回体
 type resp struct {
-	Msg string `json:"msg"`
-	Action int `json:"action"`
+	Msg       string        `json:"msg"`
+	Action    int           `json:"action"`
 	ErrorCode ErrorCodeType `json:"errorCode"`
 }
 
 // /v1/gettask 获取任务
-func GetTask(c *gin.Context)  {
+func GetTask(c *gin.Context) {
 	var p resp
-	if len(TaskQueue) >0{
-		p.Msg="Task To do"
+	if len(TaskQueue) > 0 {
+		p.Msg = "Task To do"
 		p.ErrorCode = NoError
 		p.Action = TaskQueue[0].Action
 		TaskQueue = TaskQueue[1:]
-		c.JSON(http.StatusOK,p)
-	}else{
-		p.Msg="No Task To do"
+		c.JSON(http.StatusOK, p)
+	} else {
+		p.Msg = "No Task To do"
 		p.ErrorCode = NoError
 		p.Action = 0
-		c.JSON(http.StatusOK,p)
+		c.JSON(http.StatusOK, p)
 	}
 }
 
@@ -57,11 +57,11 @@ func PushTask(c *gin.Context) {
 	var r req
 	var p resp
 	err := c.ShouldBindJSON(&r)
-	if err != nil{
+	if err != nil {
 		p.ErrorCode = ErrorInvalidReq
 		p.Msg = "Invalid Request"
 		c.JSON(http.StatusBadRequest, p)
-	}else {
+	} else {
 		p.ErrorCode = NoError
 		p.Msg = "Request Accept"
 		p.Action = r.Action

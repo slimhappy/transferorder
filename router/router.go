@@ -2,8 +2,8 @@ package router
 
 import (
 	"github.com/gin-gonic/gin"
-	"transferorder/v1/fsocket"
-	"transferorder/v1/task"
+	"transferorder/v1/api/fsocket"
+	"transferorder/v1/api/task"
 )
 
 var Router = gin.Default()
