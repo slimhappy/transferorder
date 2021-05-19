@@ -35,21 +35,27 @@ type resp struct {
 	ErrorCode ErrorCodeType `json:"errorCode"`
 }
 
-// /v1/gettask 获取任务
-func GetTask(c *gin.Context) {
-	var p resp
+func handleGetTaskTaskToDo(p *resp) {
 	if len(TaskQueue) > 0 {
 		p.Msg = "Task To do"
 		p.ErrorCode = NoError
 		p.Action = TaskQueue[0].Action
 		TaskQueue = TaskQueue[1:]
-		c.JSON(http.StatusOK, p)
-	} else {
-		p.Msg = "No Task To do"
-		p.ErrorCode = NoError
-		p.Action = 0
-		c.JSON(http.StatusOK, p)
 	}
+}
+
+func handleGetTaskNoTask(p *resp) {
+	p.Msg = "No Task To do"
+	p.ErrorCode = NoError
+	p.Action = 0
+}
+
+// /v1/gettask 获取任务
+func GetTask(c *gin.Context) {
+	var p resp
+	handleGetTaskNoTask(&p)
+	handleGetTaskTaskToDo(&p)
+	c.JSON(http.StatusOK, p)
 }
 
 // /v1/pushtask 推送任务

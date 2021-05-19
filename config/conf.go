@@ -9,8 +9,9 @@ type ConfYaml struct {
 }
 
 type SectionSvr struct {
-	Port    string `yaml:"port"`
-	FileDir string `yaml:"file_dir"`
+	Port            string `yaml:"port"`
+	FileDir         string `yaml:"file_dir"`
+	FileTypePattern string `yaml:"file_type_pattern"`
 }
 
 var Conf ConfYaml
@@ -26,4 +27,5 @@ func init() {
 	}
 	Conf.Svr.Port = viper.GetString("svr.port")
 	Conf.Svr.FileDir = viper.GetString("svr.file_dir")
+	Conf.Svr.FileTypePattern = viper.GetString("svr.file_type_pattern")
 }
